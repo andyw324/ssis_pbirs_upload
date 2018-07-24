@@ -1,0 +1,7 @@
+*.zip
+*.suo
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+*.sql
+*.txt
