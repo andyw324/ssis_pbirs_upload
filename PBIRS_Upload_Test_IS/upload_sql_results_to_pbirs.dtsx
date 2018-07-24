@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="upload_sql_results_to_pbirs"
   DTS:PackageType="5"
-  DTS:VersionBuild="38"
-  DTS:VersionGUID="{C45883C5-9033-4A6D-9A00-D08124D8CB7B}">
+  DTS:VersionBuild="39"
+  DTS:VersionGUID="{82DD194C-6A4B-4AE9-BDB4-1DB5FE702BBA}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:ConnectionManagers>
@@ -341,13 +341,7 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885
 
             bool f = false; // for firing information event
 
-            //int numFolders = 5; // Dts.Variables["User::myStringVariable"].Value
             string dateStamp = Dts.Variables["User::strFolderToDeleteDateStamp"].Value.ToString();
-
-            // Import data from an SSIS object variable holding the output of an SQL query
-            //OleDbDataAdapter da = new OleDbDataAdapter();
-            //DataTable dt = new DataTable();
-            //da.Fill(dt, Dts.Variables["objSQLQueryResultSet"].Value);
             
             // Set up Reporting Services Web Proxy
             ReportingService2010 rs = new ReportingService2010();
@@ -355,123 +349,12 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885
             rs.Credentials = System.Net.CredentialCache.DefaultCredentials; // Use current executing account credentials
 
             // Set up variables to hold file definition and warnings
-            //Byte[] definition = null;
             Warning[] warnings = null;
-
-            // Remove in future - uploadName needs to reflect a user defined value
-            //string uploadFilePath = Dts.Variables["$Package::pbirs_reportserver_http"].Value.ToString() + "\\" + 
-                                    //Dts.Variables["User::strSQLFileName"].Value.ToString() + 
-                                    //".sql";
-            //"C:\\Users\\andwong\\Documents\\Visual Studio 2015\\Projects\\PBIRS_Upload_Test\\HelloWorld.txt";//"C:\\Users\\wonga\\Documents\\Visual Studio 2015\\Projects\\Testy pbirs uploady\\testy.csv";
-
-            //string uploadName = Dts.Variables["User::strSQLFileName"].Value.ToString() + ".csv";
-
-            // Set file properties
-            //Property descriptionProp = new Property();
-            //descriptionProp.Name = "Some description";
-            //descriptionProp.Value = "";
-
-            //Property hiddenProp = new Property();
-            //hiddenProp.Name = "Hidden";
-            //hiddenProp.Value = "False";
-
-            //Property mimeTypeProp = new Property();
-            //mimeTypeProp.Name = "MimeType";
-            //mimeTypeProp.Value = "application/octet-stream"; // value for a csv / txt. For an xls need to double check what this should be
-
-            //// Combine file props into single property array
-            //Property[] props = new Property[3];
-            //props[0] = descriptionProp;
-            //props[1] = hiddenProp;
-            //props[2] = mimeTypeProp;
-
-            //// Set folder properties - remove?
-            //Property folderProp = new Property();
-            //folderProp.Name = "Department";
-            //folderProp.Value = "Skynet test"; // make this a user defined value - set this to be a date based folder... need to include a way of checking whether folder already exists
-            
-            //// Combine folder props into single property array
-            //Property[] folderProps = new Property[1];
-            //folderProps[0] = folderProp;
-
-            //---------------- Convert datatable into a Byte array ----------------------//
-            // use string builder to build the csv from the datatable values
-            //StringBuilder builder = new StringBuilder();
-
-            //if (Dts.Variables["User::errorMessageToWrite"].Value.ToString() == "")
-            //{
-            //    // Get column headers
-            //    for (int i = 0; i < dt.Columns.Count; i++)
-            //    {
-            //        builder.Append("\"" + dt.Columns[i].ColumnName + "\"");
-            //        if (i != dt.Columns.Count - 1)
-            //        {
-            //            builder.Append(",");
-            //        }
-            //    }
-            //    builder.Append(Environment.NewLine);
-
-            //    // Get row vaules
-            //    foreach (DataRow dr in dt.Rows)
-            //    {
-            //        for (int i = 0; i < dt.Columns.Count; i++) // DataColumn dc in dt.Columns)
-            //        {
-            //            switch (dt.Columns[i].DataType.ToString())
-            //            {
-            //                case "System.String":
-            //                case "System.DateTime":
-            //                    string rowString = dr[i].ToString().Replace("\"", "'");
-            //                    builder.Append("\"" + rowString + "\"");
-            //                    break;
-            //                default:
-            //                    builder.Append(dr[i].ToString());
-            //                    break;
-            //            }
-            //            if (i != dt.Columns.Count - 1)
-            //            {
-            //                builder.Append(",");
-            //            }
-            //        }
-            //        builder.Append(Environment.NewLine);
-            //    }
-            //} else {
-            //    builder.Append(Dts.Variables["User::errorMessageToWrite"].Value.ToString());
-            //}
-            //// Convert "string" to a Byte based binary
-            //definition = Encoding.UTF8.GetBytes(builder.ToString());
 
             try
             {
                 string parent = Dts.Variables["$Package::pbirs_parent_folder"].Value.ToString();
-                //string parentFolderName = "Skynet";
                 string folderName = dateStamp;
-                //string[] parentPathArray = parent.Split('/');
-                //string tempParentPath = "/";
-                //foreach (string parentFolder in parentPathArray)
-                //{
-                //    if (rs.GetItemType(tempParentPath + parentFolder) == "Unknown")
-                //    {
-                //        if (tempParentPath == "/")
-                //        {
-                //            rs.CreateFolder(parentFolder, tempParentPath, SetFolderProps(""));
-                //        } else
-                //        {
-                //            rs.CreateFolder(parentFolder, tempParentPath.TrimEnd('/'), SetFolderProps(""));
-                //        }
-                //    }
-                //    if (parentFolder != "")
-                //    {
-                //        tempParentPath += parentFolder + "/";
-                //    }
-                //}
-
-                //if (rs.GetItemType(parent) == "Unknown")
-                //{
-                //    rs.CreateFolder(parent, "/", SetFolderProps("Skynet folder"));
-                //}
-                //rs.DeleteItem(parent);
-
-                //rs.CreateFolder("Skynet", "/", SetFolderProps("Skynet folder"));
                 string successMessage = "";
                 if (rs.GetItemType(parent + "/" + folderName) != "Unknown")
                 {
@@ -481,12 +364,7 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885
                 {
                     successMessage = "No action: Folder '" + parent + "/" + folderName + "' not found";
                 }
-                //bool overwriteFiles = (Dts.Variables["$Package::overwrite_existing_files"].Value.ToString() == "True");
-                //CatalogItem report = rs.CreateCatalogItem("Resource", uploadName, parent + "/" + folderName, overwriteFiles, definition, props, out warnings);
-                ////}
-                ////string parent = "/Skynet"; 
-                ////CatalogItem report = rs.CreateCatalogItem("Resource", uploadName, parent, true, definition, props, out warnings);
-
+                
                 if (warnings != null)
                 {
                     foreach (Warning warning in warnings)
@@ -511,22 +389,10 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885
                 Dts.TaskResult = (int)ScriptResults.Failure;
             }
 
-
-            //Dts.TaskResult = (int)ScriptResults.Success;
         }
 
         #region Private function declaration
-        //private static Property[] SetFolderProps(string description)
-        //{
-        //    Property folderProp = new Property();
-        //    folderProp.Name = "Description";
-        //    folderProp.Value = description; // make this a user defined value - set this to be a date based folder... need to include a way of checking whether folder already exists
-
-        //    // Combine folder props into single property array
-        //    Property[] folderProps = new Property[1];
-        //    folderProps[0] = folderProp;
-        //    return folderProps;
-        //}
+        
 
         #endregion
 
@@ -1174,57 +1040,57 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885.Properties {
                 Encoding="UTF16LE"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
 <c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="3.0" schemaVersion="1.0">
 	<msb:PropertyGroup>
-		<msb:CodeName>ST_3c2d02d5408542339dd507fb3dc44885</msb:CodeName>
 		<msb:Language>msBuild</msb:Language>
+		<msb:CodeName>ST_3c2d02d5408542339dd507fb3dc44885</msb:CodeName>
 		<msb:DisplayName>ST_3c2d02d5408542339dd507fb3dc44885</msb:DisplayName>
 		<msb:ProjectId>{F574FBB9-2AE0-4B26-B109-A0CA1B7604B0}</msb:ProjectId>
 	</msb:PropertyGroup>
 	<msb:ItemGroup>
 		<msb:Project Include="ST_d9b9692de091457997682a3526ad8325.csproj"/>
-		<msb:File Include="Properties\AssemblyInfo.cs"/>
+		<msb:Folder Include="Service References\"/>
+		<msb:Folder Include="Web References\"/>
+		<msb:Folder Include="Web References\localhost\"/>
 		<msb:File Include="Properties\Settings.settings"/>
+		<msb:File Include="Properties\AssemblyInfo.cs"/>
 		<msb:File Include="Properties\Resources.resx"/>
 		<msb:File Include="Properties\Resources.Designer.cs"/>
+		<msb:File Include="app.config"/>
 		<msb:File Include="Web References\localhost\ItemHistorySnapshot.datasource"/>
 		<msb:File Include="Properties\Settings.Designer.cs"/>
-		<msb:File Include="app.config"/>
+		<msb:File Include="Web References\localhost\ItemParameter.datasource"/>
 		<msb:File Include="ScriptMain.cs"/>
 		<msb:File Include="Web References\localhost\Role.datasource"/>
-		<msb:File Include="Web References\localhost\ItemParameter.datasource"/>
 		<msb:File Include="Web References\localhost\reportservice2010.wsdl"/>
 		<msb:File Include="Web References\localhost\Reference.map"/>
 		<msb:File Include="Web References\localhost\Reference.cs"/>
 		<msb:File Include="Web References\localhost\CacheRefreshPlan.datasource"/>
 		<msb:File Include="Web References\localhost\CacheRefreshPlanState.datasource"/>
 		<msb:File Include="Web References\localhost\Job.datasource"/>
-		<msb:File Include="Web References\localhost\Event.datasource"/>
 		<msb:File Include="Web References\localhost\ExtensionSettings.datasource"/>
+		<msb:File Include="Web References\localhost\Event.datasource"/>
 		<msb:File Include="Web References\localhost\Extension.datasource"/>
 		<msb:File Include="Web References\localhost\ExpirationDefinition.datasource"/>
 		<msb:File Include="Web References\localhost\ScheduleDefinitionOrReference.datasource"/>
-		<msb:File Include="Web References\localhost\Schedule.datasource"/>
 		<msb:File Include="Web References\localhost\ModelDrillthroughReport.datasource"/>
+		<msb:File Include="Web References\localhost\Schedule.datasource"/>
 		<msb:File Include="Web References\localhost\ModelCatalogItem.datasource"/>
 		<msb:File Include="Web References\localhost\ModelItem.datasource"/>
 		<msb:File Include="Web References\localhost\DataSourcePrompt.datasource"/>
 		<msb:File Include="Web References\localhost\Policy.datasource"/>
 		<msb:File Include="Web References\localhost\Task.datasource"/>
-		<msb:File Include="Web References\localhost\DataSource.datasource"/>
 		<msb:File Include="Web References\localhost\DataRetrievalPlan.datasource"/>
+		<msb:File Include="Web References\localhost\DataSource.datasource"/>
 		<msb:File Include="Web References\localhost\DataSourceDefinition.datasource"/>
 		<msb:File Include="Web References\localhost\Subscription.datasource"/>
 		<msb:File Include="Web References\localhost\ParameterValueOrFieldReference.datasource"/>
 		<msb:File Include="Web References\localhost\ParameterValue.datasource"/>
 		<msb:File Include="Web References\localhost\ActiveState.datasource"/>
 		<msb:File Include="Web References\localhost\ExtensionParameter.datasource"/>
-		<msb:File Include="Web References\localhost\DataSetDefinition.datasource"/>
 		<msb:File Include="Web References\localhost\Property.datasource"/>
+		<msb:File Include="Web References\localhost\DataSetDefinition.datasource"/>
 		<msb:File Include="Web References\localhost\ItemReferenceData.datasource"/>
 		<msb:File Include="Web References\localhost\Warning.datasource"/>
 		<msb:File Include="Web References\localhost\CatalogItem.datasource"/>
-		<msb:Folder Include="Service References\"/>
-		<msb:Folder Include="Web References\"/>
-		<msb:Folder Include="Web References\localhost\"/>
 	</msb:ItemGroup>
 </c:Project>]]></ProjectItem>
               <ProjectItem
@@ -19735,7 +19601,7 @@ namespace ST_3c2d02d5408542339dd507fb3dc44885.localhost {
               <BinaryItem
                 Name="ST_d9b9692de091457997682a3526ad8325.dll">TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
-ZGUuDQ0KJAAAAAAAAABQRQAATAEDAAcTVlsAAAAAAAAAAOAAIiALATAAAA4EAAAIAAAAAAAAPiwE
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDALn6VlsAAAAAAAAAAOAAIiALATAAAA4EAAAIAAAAAAAAPiwE
 AAAgAAAAQAQAAAAAEAAgAAAAAgAABAAAAAAAAAAGAAAAAAAAAACABAAAAgAAAAAAAAMAYIUAABAA
 ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAOwrBABPAAAAAEAEAHgEAAAAAAAAAAAAAAAAAAAA
 AAAAAGAEAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
@@ -22055,8 +21921,8 @@ AAwHwwICABoHxQICACAHxwICACoHyQICACsHywICADkHzQICADoHzwICAEQH0QICAEUH0wICAFMH
 AIsH6QICAJEH6wICAJcH7QICAJ0H7wICAKcH8QICAK0H8wICALMH9QICALkH9wICAL8H+QICAMUH
 +wICAM8H/QICANAH/wICANEHAQMCANIHAwMCANMHBQMCANQHBwMCAN4HCQMCAOwHCwMCAPIHDQMC
 APgHDwOlCQAAzAkAANgJAADdCQAA4gkAAOcJAADsCQAA7wkAAPQJAAD5CQAA/gkAAAMKAAAICgAA
-DQoAABIKAAAXCgAAHAoAACEKAAAmCgAAKwoAADAKAAA0CgAAOAoAADwKAABACgAABIAAAAEAAAB6
-GkuDAAAAAAAAAABOAAAABAAAAAAAAAAAAAAAXwoAADwCAAAAAAAADQAAAAAAAAAAAAAAaAoAAI1p
+DQoAABIKAAAXCgAAHAoAACEKAAAmCgAAKwoAADAKAAA0CgAAOAoAADwKAABACgAABIAAAAEAAAB7
+GmROAAAAAAAAAABOAAAABAAAAAAAAAAAAAAAXwoAADwCAAAAAAAADQAAAAAAAAAAAAAAaAoAAI1p
 AAAAAAAABAAAAAAAAAAAAAAAcQoAANeIAAAAAAAABAAAAAAAAAAAAAAAXwoAAExsAAAAAAAABAAA
 AAAAAAAAAAAAXwoAADVrAAAAAAAADQAAAAAAAAAAAAAAaAoAAMkBAAAAAAAAAAAAAAEAAABmiQAA
 EgECAIcA/gAAAIcAEAEAAIcAIgEAAIcANAEAAIcARgEAAIcAWAEAAIcAagEAAIcAfAEAAIcAjgEA
@@ -22898,7 +22764,7 @@ UgBlAGYAcgBlAHMAaABQAGwAYQBuAAArTABpAHMAdABDAGEAYwBoAGUAUgBlAGYAcgBlAHMAaABQ
 AGwAYQBuAHMAABNMAG8AZwBvAG4AVQBzAGUAcgAADUwAbwBnAG8AZgBmAAAdRwBlAHQAUABlAHIA
 bQBpAHMAcwBpAG8AbgBzAAApRwBlAHQAUwB5AHMAdABlAG0AUABlAHIAbQBpAHMAcwBpAG8AbgBz
 AAAlTABpAHMAdABTAGUAYwB1AHIAaQB0AHkAUwBjAG8AcABlAHMAABNsAG8AYwBhAGwASABvAHMA
-dAAA8CLPnkwxQU2vSGLgDfzMbwAEIAEBCAMgAAEFIAEBEREEIAEBDgUgAQERVQUgAgEODgUgAQER
+dAAAUr/cxldwnEeX0vR731XjLgAEIAEBCAMgAAEFIAEBEREEIAEBDgUgAQERVQUgAgEODgUgAQER
 bQYgAQESgIUHIAIBDhKAhRcHCwIOEhQdEoEIDg4OHRKBCAgSgQgSPQUgABKA7QUgABKA8QYgARKA
 9RwDIAAcAyAADgUAABKA/QYgAQESgP0GAAMODg4OBQACAg4OBQABDh0OBAABAQ4FIAASgQ0FAAIO
 Dg4KIAYBCA4ODggQAgUgABKBEQgAARKAhRGBFQUgABKBGQcgAgEOEoEZBCABHA4IAAESgR0SgR0E
@@ -24406,14 +24272,14 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAEAEAAAABgAAIAAAAAAAAAAAAAAAAAAAAEAAQAAADAAAIAAAAAAAAAAAAAAAAAAAAEA
 AAAAAEgAAABYQAQAGgQAAAAAAAAAAAAAGgQ0AAAAVgBTAF8AVgBFAFIAUwBJAE8ATgBfAEkATgBG
-AE8AAAAAAL0E7/4AAAEAAAABAEuDehoAAAEAS4N6Gj8AAAAAAAAABAAAAAIAAAAAAAAAAAAAAAAA
+AE8AAAAAAL0E7/4AAAEAAAABAGROexoAAAEAZE57Gj8AAAAAAAAABAAAAAIAAAAAAAAAAAAAAAAA
 AABEAAAAAQBWAGEAcgBGAGkAbABlAEkAbgBmAG8AAAAAACQABAAAAFQAcgBhAG4AcwBsAGEAdABp
 AG8AbgAAAAAAAACwBHoDAAABAFMAdAByAGkAbgBnAEYAaQBsAGUASQBuAGYAbwAAAFYDAAABADAA
 MAAwADAAMAA0AGIAMAAAABoAAQABAEMAbwBtAG0AZQBuAHQAcwAAAAAAAAAiAAEAAQBDAG8AbQBw
 AGEAbgB5AE4AYQBtAGUAAAAAAAAAAABwACQAAQBGAGkAbABlAEQAZQBzAGMAcgBpAHAAdABpAG8A
 bgAAAAAAUwBUAF8AMwBjADIAZAAwADIAZAA1ADQAMAA4ADUANAAyADMAMwA5AGQAZAA1ADAANwBm
 AGIAMwBkAGMANAA0ADgAOAA1AAAAPgAPAAEARgBpAGwAZQBWAGUAcgBzAGkAbwBuAAAAAAAxAC4A
-MAAuADYANwA3ADgALgAzADMANgAxADEAAAAAAHAAKAABAEkAbgB0AGUAcgBuAGEAbABOAGEAbQBl
+MAAuADYANwA3ADkALgAyADAAMAA2ADgAAAAAAHAAKAABAEkAbgB0AGUAcgBuAGEAbABOAGEAbQBl
 AAAAUwBUAF8AZAA5AGIAOQA2ADkAMgBkAGUAMAA5ADEANAA1ADcAOQA5ADcANgA4ADIAYQAzADUA
 MgA2AGEAZAA4ADMAMgA1AC4AZABsAGwAAABIABIAAQBMAGUAZwBhAGwAQwBvAHAAeQByAGkAZwBo
 AHQAAABDAG8AcAB5AHIAaQBnAGgAdAAgAEAAIAAgADIAMAAxADgAAAAqAAEAAQBMAGUAZwBhAGwA
@@ -24422,8 +24288,8 @@ AG4AYQBtAGUAAABTAFQAXwBkADkAYgA5ADYAOQAyAGQAZQAwADkAMQA0ADUANwA5ADkANwA2ADgA
 MgBhADMANQAyADYAYQBkADgAMwAyADUALgBkAGwAbAAAAGgAJAABAFAAcgBvAGQAdQBjAHQATgBh
 AG0AZQAAAAAAUwBUAF8AMwBjADIAZAAwADIAZAA1ADQAMAA4ADUANAAyADMAMwA5AGQAZAA1ADAA
 NwBmAGIAMwBkAGMANAA0ADgAOAA1AAAAQgAPAAEAUAByAG8AZAB1AGMAdABWAGUAcgBzAGkAbwBu
-AAAAMQAuADAALgA2ADcANwA4AC4AMwAzADYAMQAxAAAAAABGAA8AAQBBAHMAcwBlAG0AYgBsAHkA
-IABWAGUAcgBzAGkAbwBuAAAAMQAuADAALgA2ADcANwA4AC4AMwAzADYAMQAxAAAAAAAAAAAAAAAA
+AAAAMQAuADAALgA2ADcANwA5AC4AMgAwADAANgA4AAAAAABGAA8AAQBBAHMAcwBlAG0AYgBsAHkA
+IABWAGUAcgBzAGkAbwBuAAAAMQAuADAALgA2ADcANwA5AC4AMgAwADAANgA4AAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
